@@ -1,6 +1,6 @@
 package com.example.db
 
-import com.example.model.User
+import com.example.features.user.domain.model.User
 import com.example.utils.Constant
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.coroutine
@@ -8,8 +8,8 @@ import org.litote.kmongo.reactivestreams.KMongo
 import java.net.URLEncoder
 
 class DatabaseConnection {
-    private val username = URLEncoder.encode("mongo", "UTF-8")
-    private val password = URLEncoder.encode("IgxAy6rZ13bC8nRymAY9", "UTF-8")
+    private val username = URLEncoder.encode(System.getenv(Constant.USERNAME), "UTF-8")
+    private val password = URLEncoder.encode(System.getenv(Constant.PASSWORD), "UTF-8")
 
     private val client =
         KMongo.createClient("mongodb://$username:$password@containers-us-west-68.railway.app:8002").coroutine

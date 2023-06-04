@@ -1,8 +1,8 @@
 package com.example.plugins
 
 import com.example.db.DatabaseConnection
-import com.example.model.User
-import com.example.model.UserResponse
+import com.example.features.user.domain.model.User
+import com.example.features.user.domain.model.UserResponse
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
@@ -13,6 +13,7 @@ import java.lang.Exception
 fun Application.configureRouting(
     db: DatabaseConnection
 ) {
+
 
     routing {
 

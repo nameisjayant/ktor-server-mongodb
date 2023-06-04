@@ -1,6 +1,8 @@
 package com.example
 
 import com.example.db.DatabaseConnection
+import com.example.features.notes.domain.route.noteRoute
+import com.example.features.user.domain.route.userRoute
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -13,6 +15,9 @@ fun main() {
 
 fun Application.module() {
     val db = DatabaseConnection()
+    startKoin()
     configureSerialization()
     configureRouting(db)
+    noteRoute()
+    userRoute()
 }
