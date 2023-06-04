@@ -8,11 +8,11 @@ import org.litote.kmongo.reactivestreams.KMongo
 import java.net.URLEncoder
 
 class DatabaseConnection {
-    private val username = URLEncoder.encode("nameisjayant", "UTF-8")
-    private val password = URLEncoder.encode("@@jks123@@", "UTF-8")
+    private val username = URLEncoder.encode("mongo", "UTF-8")
+    private val password = URLEncoder.encode("IgxAy6rZ13bC8nRymAY9", "UTF-8")
 
     private val client =
-        KMongo.createClient("mongodb+srv://$username:$password@cluster0.f8fcv5s.mongodb.net/?retryWrites=true&w=majority").coroutine
+        KMongo.createClient("mongodb://$username:$password@containers-us-west-68.railway.app:8002").coroutine
     private val database = client.getDatabase(Constant.DATABASE_NAME)
     private val userCollection: CoroutineCollection<User> = database.getCollection()
 
