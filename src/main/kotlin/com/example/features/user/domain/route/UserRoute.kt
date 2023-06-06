@@ -1,6 +1,9 @@
 package com.example.features.user.domain.route
 
 import com.example.KoinComponent
+import com.example.auth.JwtConfig
+import com.example.auth.generateToken
+import com.example.auth.jwtConfig
 import com.example.features.user.domain.model.User
 import com.example.utils.ApiResponse
 import com.example.utils.Constant
@@ -18,36 +21,32 @@ fun Application.userRoute(
 
     routing {
         route(Constant.USER) {
-            authenticate("auth-bearer") {
+            post {
+                val token = call.principal<UserIdPrincipal>()?.name ?: "none"
+                try {
+                    val userData = call.receive<User>()
+                    val response = component.userRepository.addUser(
+                        userData
+                    )
+                    val generateToken = generateToken(
+                        userData, jwtConfig
+                    )
+                    call.respond(
+                        status = HttpStatusCode.OK, ApiResponse(
+                            statusCode = HttpStatusCode.OK,
+                            generateToken,
+                            listOf(response)
+                        )
+                    )
 
-                post {
-                    val token = call.principal<UserIdPrincipal>()?.name ?: "none"
-                    try {
-                        val userData = call.receive<User>()
-                        val response = component.userRepository.addUser(
-                            userData
+                } catch (e: Exception) {
+                    call.respond(
+                        status = HttpStatusCode.BadRequest, ApiResponse<User>(
+                            statusCode = HttpStatusCode.BadRequest,
+                            null,
+                            null
                         )
-                        call.respond(
-                            status = HttpStatusCode.OK, ApiResponse(
-                                status = true,
-                                statusCode = HttpStatusCode.OK,
-                                message = "Success",
-                                token,
-                                listOf(response)
-                            )
-                        )
-
-                    } catch (e: Exception) {
-                        call.respond(
-                            status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                                status = true,
-                                statusCode = HttpStatusCode.BadRequest,
-                                message = "Please pass email and password in the body request",
-                                null,
-                                null
-                            )
-                        )
-                    }
+                    )
                 }
             }
         }

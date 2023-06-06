@@ -10,8 +10,9 @@ import java.net.URLEncoder
 
 object DatabaseConnection {
     //    private val username = URLEncoder.encode(System.getenv(Constant.USERNAME), "UTF-8")
-//    private val password = URLEncoder.encode(System.getenv(Constant.PASSWORD), "UTF-8")
+    //     private val password = URLEncoder.encode(System.getenv(Constant.PASSWORD), "UTF-8")
     //    private val url = "mongodb://$username:$password@containers-us-west-68.railway.app:8002"
+
     private val username = URLEncoder.encode("nameisjayant", "UTF-8")
     private val password = URLEncoder.encode("@@jks123@@", "UTF-8")
 
@@ -22,11 +23,5 @@ object DatabaseConnection {
     private val database = client.getDatabase(Constant.DATABASE_NAME)
     val userCollection: CoroutineCollection<User> = database.getCollection()
 
-    suspend fun addUser(users: User): User {
-        userCollection.insertOne(users)
-        return users
-    }
-
-    suspend fun getAllUsers(): List<User> = userCollection.find().toList()
 
 }
