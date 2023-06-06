@@ -49,6 +49,37 @@ fun Application.userRoute(
                     )
                 }
             }
+
+            delete("/{id}") {
+                try {
+                    val userId = call.parameters["id"] ?: return@delete call.respond(
+                        status = HttpStatusCode.BadRequest,
+                        "Pass User Id in path"
+                    )
+                    val isDeleted = component.userRepository.deleteUser(userId)
+                    if (isDeleted)
+                        call.respond(
+                            status = HttpStatusCode.OK,
+                            ApiResponse<User>(
+                                HttpStatusCode.OK
+                            )
+                        )
+                    else
+                        call.respond(
+                            status = HttpStatusCode.BadRequest,
+                            ApiResponse<User>(
+                                HttpStatusCode.BadRequest
+                            )
+                        )
+                } catch (e: java.lang.Exception) {
+                    call.respond(
+                        status = HttpStatusCode.BadRequest,
+                        ApiResponse<User>(
+                            HttpStatusCode.BadRequest
+                        )
+                    )
+                }
+            }
         }
     }
 
