@@ -3,6 +3,7 @@ package com.example.features.user.domain.route
 import com.example.KoinComponent
 import com.example.auth.JwtConfig
 import com.example.auth.generateToken
+import com.example.auth.hash
 import com.example.auth.jwtConfig
 import com.example.features.user.domain.model.User
 import com.example.utils.ApiResponse
@@ -22,11 +23,12 @@ fun Application.userRoute(
     routing {
         route(Constant.USER) {
             post {
-                val token = call.principal<UserIdPrincipal>()?.name ?: "none"
+
                 try {
                     val userData = call.receive<User>()
+                    val hashPassword = hash(userData.password)
                     val response = component.userRepository.addUser(
-                        userData
+                        User(email = userData.email, password = hashPassword)
                     )
                     val generateToken = generateToken(
                         userData, jwtConfig
