@@ -10,6 +10,5 @@ fun Application.startKoin() {
     install(Koin) {
         slf4jLogger()
         modules(koinModule)
-
     }
 }
