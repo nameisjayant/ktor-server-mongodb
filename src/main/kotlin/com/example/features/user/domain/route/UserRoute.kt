@@ -1,10 +1,7 @@
 package com.example.features.user.domain.route
 
 import com.example.KoinComponent
-import com.example.auth.JwtConfig
-import com.example.auth.generateToken
-import com.example.auth.hash
-import com.example.auth.jwtConfig
+import com.example.auth.*
 import com.example.features.user.domain.model.User
 import com.example.utils.ApiResponse
 import com.example.utils.Constant
@@ -14,6 +11,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
 
 
 fun Application.userRoute(
@@ -83,12 +81,13 @@ fun Application.userRoute(
         }
 
         post("/login") {
-            try {
-                val user = call.receive<User>()
-                val hashPassword = hash(user.password)
-                val response = component.userRepository.loginUser(user)
+            val user = call.receive<User>()
+            val hashPassword = hash(user.password)
 
-                if (response != null && user.password == hashPassword) {
+            try {
+                val response = component.userRepository.loginUser(user)
+                if (response != null && response.password == hashPassword) {
+                    call.sessions.set(MySession(response.id))
                     val generateToken = generateToken(
                         response, jwtConfig
                     )
@@ -97,6 +96,15 @@ fun Application.userRoute(
                             statusCode = HttpStatusCode.OK,
                             generateToken,
                             listOf(response)
+                        )
+                    )
+
+                } else {
+                    call.respond(
+                        status = HttpStatusCode.BadRequest, ApiResponse<User>(
+                            statusCode = HttpStatusCode.BadRequest,
+                            null,
+                            null
                         )
                     )
                 }

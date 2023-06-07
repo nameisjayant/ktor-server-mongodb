@@ -3,6 +3,7 @@ package com.example.data.repositories
 import com.example.db.DatabaseConnection
 import com.example.features.user.domain.model.User
 import com.example.features.user.domain.repository.UserRepository
+import org.bson.Document
 import org.litote.kmongo.Data
 import org.litote.kmongo.eq
 
@@ -25,7 +26,8 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override suspend fun loginUser(user: User): User? {
-        return DatabaseConnection.userCollection.find(User::email eq user.email).first()
+        val query = Document("email", user.email)
+        return DatabaseConnection.userCollection.find(query).first()
     }
 
 }

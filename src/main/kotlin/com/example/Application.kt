@@ -6,6 +6,7 @@ import com.example.features.notes.domain.route.noteRoute
 import com.example.features.user.domain.route.userRoute
 import com.example.plugins.configureAuthenticate
 import com.example.plugins.configureSerialization
+import com.example.plugins.configureSession
 import com.example.plugins.startKoin
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -23,6 +24,7 @@ fun Application.module() {
     configureAuthenticate(
         jwtConfig
     )
+    configureSession()
     userRoute(component)
     noteRoute()
 
