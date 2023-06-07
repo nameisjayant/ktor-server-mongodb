@@ -15,7 +15,7 @@ interface UserRepository {
         password: String
     ): User
 
-    suspend fun loginUser(user: User): User
+    suspend fun loginUser(user: User): User?
 
 
 }

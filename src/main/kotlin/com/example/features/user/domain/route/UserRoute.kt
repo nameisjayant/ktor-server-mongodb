@@ -21,17 +21,76 @@ fun Application.userRoute(
 ) {
 
     routing {
-        route(Constant.USER) {
-            post {
+        post("/user") {
 
-                try {
-                    val userData = call.receive<User>()
-                    val hashPassword = hash(userData.password)
-                    val response = component.userRepository.addUser(
-                        User(email = userData.email, password = hashPassword)
+            try {
+                val userData = call.receive<User>()
+                val hashPassword = hash(userData.password)
+                val response = component.userRepository.addUser(
+                    User(email = userData.email, password = hashPassword)
+                )
+                val generateToken = generateToken(
+                    userData, jwtConfig
+                )
+                call.respond(
+                    status = HttpStatusCode.OK, ApiResponse(
+                        statusCode = HttpStatusCode.OK,
+                        generateToken,
+                        listOf(response)
                     )
+                )
+
+            } catch (e: Exception) {
+                call.respond(
+                    status = HttpStatusCode.BadRequest, ApiResponse<User>(
+                        statusCode = HttpStatusCode.BadRequest,
+                        null,
+                        null
+                    )
+                )
+            }
+        }
+
+        delete("/user/{id}") {
+            try {
+                val userId = call.parameters["id"] ?: return@delete call.respond(
+                    status = HttpStatusCode.BadRequest,
+                    "Pass User Id in path"
+                )
+                val isDeleted = component.userRepository.deleteUser(userId)
+                if (isDeleted)
+                    call.respond(
+                        status = HttpStatusCode.OK,
+                        ApiResponse<User>(
+                            HttpStatusCode.OK
+                        )
+                    )
+                else
+                    call.respond(
+                        status = HttpStatusCode.BadRequest,
+                        ApiResponse<User>(
+                            HttpStatusCode.BadRequest
+                        )
+                    )
+            } catch (e: java.lang.Exception) {
+                call.respond(
+                    status = HttpStatusCode.BadRequest,
+                    ApiResponse<User>(
+                        HttpStatusCode.BadRequest
+                    )
+                )
+            }
+        }
+
+        post("/login") {
+            try {
+                val user = call.receive<User>()
+                val hashPassword = hash(user.password)
+                val response = component.userRepository.loginUser(user)
+
+                if (response != null && user.password == hashPassword) {
                     val generateToken = generateToken(
-                        userData, jwtConfig
+                        response, jwtConfig
                     )
                     call.respond(
                         status = HttpStatusCode.OK, ApiResponse(
@@ -40,47 +99,16 @@ fun Application.userRoute(
                             listOf(response)
                         )
                     )
-
-                } catch (e: Exception) {
-                    call.respond(
-                        status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                            statusCode = HttpStatusCode.BadRequest,
-                            null,
-                            null
-                        )
-                    )
                 }
-            }
 
-            delete("/{id}") {
-                try {
-                    val userId = call.parameters["id"] ?: return@delete call.respond(
-                        status = HttpStatusCode.BadRequest,
-                        "Pass User Id in path"
+            } catch (e: java.lang.Exception) {
+                call.respond(
+                    status = HttpStatusCode.BadRequest, ApiResponse<User>(
+                        statusCode = HttpStatusCode.BadRequest,
+                        null,
+                        null
                     )
-                    val isDeleted = component.userRepository.deleteUser(userId)
-                    if (isDeleted)
-                        call.respond(
-                            status = HttpStatusCode.OK,
-                            ApiResponse<User>(
-                                HttpStatusCode.OK
-                            )
-                        )
-                    else
-                        call.respond(
-                            status = HttpStatusCode.BadRequest,
-                            ApiResponse<User>(
-                                HttpStatusCode.BadRequest
-                            )
-                        )
-                } catch (e: java.lang.Exception) {
-                    call.respond(
-                        status = HttpStatusCode.BadRequest,
-                        ApiResponse<User>(
-                            HttpStatusCode.BadRequest
-                        )
-                    )
-                }
+                )
             }
         }
     }

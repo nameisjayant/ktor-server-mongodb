@@ -24,8 +24,8 @@ class UserRepositoryImpl : UserRepository {
         return User(email = email, password = password)
     }
 
-    override suspend fun loginUser(user: User): User {
-        DatabaseConnection.userCollection.findOne(User::email eq user.email)
+    override suspend fun loginUser(user: User): User? {
+        return DatabaseConnection.userCollection.find(User::email eq user.email).first()
     }
 
 }
