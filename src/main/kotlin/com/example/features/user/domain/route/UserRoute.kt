@@ -4,10 +4,9 @@ import com.example.KoinComponent
 import com.example.auth.*
 import com.example.features.user.domain.model.User
 import com.example.utils.ApiResponse
-import com.example.utils.Constant
+import com.example.utils.MessageResponse
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -19,7 +18,7 @@ fun Application.userRoute(
 ) {
 
     routing {
-        post("/user") {
+        post("/register") {
 
             try {
                 val userData = call.receive<User>()
@@ -32,18 +31,25 @@ fun Application.userRoute(
                 )
                 call.respond(
                     status = HttpStatusCode.OK, ApiResponse(
-                        statusCode = HttpStatusCode.OK,
                         generateToken,
-                        listOf(response)
+                        listOf(response),
+                        null,
+                        MessageResponse(
+                            201,
+                            "User Register Successfully"
+                        )
                     )
                 )
 
             } catch (e: Exception) {
                 call.respond(
                     status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                        statusCode = HttpStatusCode.BadRequest,
                         null,
-                        null
+                        null,
+                        MessageResponse(
+                            400,
+                            "Something Went Wrong!"
+                        )
                     )
                 )
             }
@@ -56,25 +62,40 @@ fun Application.userRoute(
                     "Pass User Id in path"
                 )
                 val isDeleted = component.userRepository.deleteUser(userId)
-                if (isDeleted)
+                if (isDeleted > 0)
                     call.respond(
                         status = HttpStatusCode.OK,
                         ApiResponse<User>(
-                            HttpStatusCode.OK
+                            null,
+                            null,
+                            null,
+                            MessageResponse(
+                                200,
+                                "User Deleted Successfully"
+                            )
                         )
                     )
                 else
                     call.respond(
                         status = HttpStatusCode.BadRequest,
                         ApiResponse<User>(
-                            HttpStatusCode.BadRequest
+                            null,
+                            null,
+                            MessageResponse(
+                                400,
+                                "User Not Found"
+                            )
                         )
                     )
             } catch (e: java.lang.Exception) {
                 call.respond(
-                    status = HttpStatusCode.BadRequest,
+                    status = HttpStatusCode.NotFound,
                     ApiResponse<User>(
-                        HttpStatusCode.BadRequest
+                        null, null,
+                        MessageResponse(
+                            400,
+                            "Something Went Wrong!"
+                        )
                     )
                 )
             }
@@ -93,18 +114,25 @@ fun Application.userRoute(
                     )
                     call.respond(
                         status = HttpStatusCode.OK, ApiResponse(
-                            statusCode = HttpStatusCode.OK,
                             generateToken,
-                            listOf(response)
+                            listOf(response),
+                            null,
+                            MessageResponse(
+                                200,
+                                "Logged Successfully"
+                            )
                         )
                     )
 
                 } else {
                     call.respond(
                         status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                            statusCode = HttpStatusCode.BadRequest,
                             null,
-                            null
+                            null,
+                            MessageResponse(
+                                400,
+                                "Email and Password does not Matched"
+                            )
                         )
                     )
                 }
@@ -112,9 +140,12 @@ fun Application.userRoute(
             } catch (e: java.lang.Exception) {
                 call.respond(
                     status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                        statusCode = HttpStatusCode.BadRequest,
                         null,
-                        null
+                        null,
+                        MessageResponse(
+                            400,
+                            "Something Went Wrong"
+                        )
                     )
                 )
             }

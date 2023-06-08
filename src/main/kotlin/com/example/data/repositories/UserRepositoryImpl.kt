@@ -14,8 +14,10 @@ class UserRepositoryImpl : UserRepository {
         return user
     }
 
-    override suspend fun deleteUser(id: String): Boolean =
-        DatabaseConnection.userCollection.deleteOne(User::id eq id).wasAcknowledged()
+    override suspend fun deleteUser(id: String): Long {
+        val query = Document("id", id)
+        return DatabaseConnection.userCollection.deleteOne(query).deletedCount
+    }
 
     override suspend fun updateUser(id: String, email: String, password: String): User {
         DatabaseConnection.userCollection.updateOneById(

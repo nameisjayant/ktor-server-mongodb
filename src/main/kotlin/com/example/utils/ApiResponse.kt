@@ -1,10 +1,14 @@
 package com.example.utils
 
-import io.ktor.http.*
-
 
 data class ApiResponse<T>(
-    val statusCode: HttpStatusCode,
     val token: String? = null,
-    val data: List<T>? = null
+    val data: List<T>? = null,
+    val error: MessageResponse? = null,
+    val success: MessageResponse? = null
+)
+
+data class MessageResponse(
+    val statusCode: Int,
+    val message: String
 )
