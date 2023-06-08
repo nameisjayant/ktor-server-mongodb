@@ -26,6 +26,6 @@ fun Application.module() {
     )
     configureSession()
     userRoute(component)
-    noteRoute()
+    noteRoute(component)
 
 }

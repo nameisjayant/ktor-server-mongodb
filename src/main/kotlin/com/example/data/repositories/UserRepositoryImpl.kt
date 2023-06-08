@@ -21,7 +21,7 @@ class UserRepositoryImpl : UserRepository {
     }
 
     override suspend fun updateUser(id: String, email: String, password: String): Long {
-        val query = Document("id", id)
+        val query = Document("_id", id)
         val update = Document(
             "\$set",
             Document("email", email)

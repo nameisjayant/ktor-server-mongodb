@@ -1,5 +1,6 @@
 package com.example.db
 
+import com.example.features.notes.domain.model.Note
 import com.example.features.user.domain.model.User
 import com.example.utils.Constant
 import org.litote.kmongo.coroutine.CoroutineCollection
@@ -22,6 +23,6 @@ object DatabaseConnection {
         KMongo.createClient(url).coroutine
     private val database = client.getDatabase(Constant.DATABASE_NAME)
     val userCollection: CoroutineCollection<User> = database.getCollection()
-
+    val noteCollection: CoroutineCollection<Note> = database.getCollection()
 
 }

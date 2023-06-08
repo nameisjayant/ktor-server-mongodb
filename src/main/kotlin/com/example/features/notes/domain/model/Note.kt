@@ -8,6 +8,5 @@ data class Note(
     val id: String = ObjectId().toString(),
     val userId: String,
     val note: String,
-    val description: String,
-    val date: String
+    val description: String
 )

@@ -13,7 +13,7 @@ fun Application.configureAuthenticate(
 ) {
 
     install(Authentication) {
-        jwt {
+        jwt("jwt") {
             verifier(
                 JWT.require(Algorithm.HMAC256(jwtConfig.secret))
                     .withAudience(jwtConfig.audience)
