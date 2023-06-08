@@ -1,6 +1,5 @@
 package com.example.features.user.domain.repository
 
-import com.example.db.DatabaseConnection
 import com.example.features.user.domain.model.User
 
 interface UserRepository {
@@ -13,7 +12,7 @@ interface UserRepository {
         id: String,
         email: String,
         password: String
-    ): User
+    ): Long
 
     suspend fun loginUser(user: User): User?
 

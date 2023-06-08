@@ -3,6 +3,7 @@ package com.example.features.user.domain.route
 import com.example.KoinComponent
 import com.example.auth.*
 import com.example.features.user.domain.model.User
+import com.example.plugins.MySession
 import com.example.utils.ApiResponse
 import com.example.utils.MessageResponse
 import io.ktor.http.*
@@ -136,6 +137,51 @@ fun Application.userRoute(
                         )
                     )
                 }
+
+            } catch (e: java.lang.Exception) {
+                call.respond(
+                    status = HttpStatusCode.BadRequest, ApiResponse<User>(
+                        null,
+                        null,
+                        MessageResponse(
+                            400,
+                            "Something Went Wrong"
+                        )
+                    )
+                )
+            }
+        }
+        put("/update/{id}") {
+            val user = call.receive<User>()
+            val id = call.parameters["id"]
+            try {
+                val hashPassword = hash(user.password)
+                val result = component.userRepository.updateUser(id ?: "0", user.email, hashPassword)
+                if (result > 0) {
+                    call.respond(
+                        status = HttpStatusCode.OK, ApiResponse<User>(
+                            null,
+                            listOf(user),
+                            null,
+                            MessageResponse(
+                                200,
+                                "Updated Successfully"
+                            )
+                        )
+                    )
+                } else {
+                    call.respond(
+                        status = HttpStatusCode.BadRequest, ApiResponse<User>(
+                            null,
+                            null,
+                            MessageResponse(
+                                400,
+                                "User ID Mismatched"
+                            )
+                        )
+                    )
+                }
+
 
             } catch (e: java.lang.Exception) {
                 call.respond(

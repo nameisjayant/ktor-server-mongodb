@@ -4,6 +4,7 @@ import com.example.db.DatabaseConnection
 import com.example.features.user.domain.model.User
 import com.example.features.user.domain.repository.UserRepository
 import org.bson.Document
+import org.bson.types.ObjectId
 import org.litote.kmongo.Data
 import org.litote.kmongo.eq
 
@@ -19,12 +20,15 @@ class UserRepositoryImpl : UserRepository {
         return DatabaseConnection.userCollection.deleteOne(query).deletedCount
     }
 
-    override suspend fun updateUser(id: String, email: String, password: String): User {
-        DatabaseConnection.userCollection.updateOneById(
-            id = id,
-            update = User(email = email, password = password)
+    override suspend fun updateUser(id: String, email: String, password: String): Long {
+        val query = Document("id", id)
+        val update = Document(
+            "\$set",
+            Document("email", email)
+                .append("password", password)
         )
-        return User(email = email, password = password)
+        val result = DatabaseConnection.userCollection.updateOne(query, update)
+        return result.modifiedCount
     }
 
     override suspend fun loginUser(user: User): User? {
