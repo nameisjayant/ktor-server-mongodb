@@ -6,6 +6,7 @@ import com.example.features.user.domain.model.User
 import com.example.plugins.MySession
 import com.example.utils.ApiResponse
 import com.example.utils.MessageResponse
+import com.example.utils.errorResponse
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -43,16 +44,7 @@ fun Application.userRoute(
                 )
 
             } catch (e: Exception) {
-                call.respond(
-                    status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                        null,
-                        null,
-                        MessageResponse(
-                            400,
-                            "Something Went Wrong!"
-                        )
-                    )
-                )
+                errorResponse()
             }
         }
 
@@ -77,28 +69,12 @@ fun Application.userRoute(
                         )
                     )
                 else
-                    call.respond(
-                        status = HttpStatusCode.BadRequest,
-                        ApiResponse<User>(
-                            null,
-                            null,
-                            MessageResponse(
-                                400,
-                                "User Not Found"
-                            )
-                        )
+                    errorResponse(
+                        400,
+                        "User Not Found"
                     )
             } catch (e: java.lang.Exception) {
-                call.respond(
-                    status = HttpStatusCode.NotFound,
-                    ApiResponse<User>(
-                        null, null,
-                        MessageResponse(
-                            400,
-                            "Something Went Wrong!"
-                        )
-                    )
-                )
+                errorResponse()
             }
         }
 
@@ -126,29 +102,14 @@ fun Application.userRoute(
                     )
 
                 } else {
-                    call.respond(
-                        status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                            null,
-                            null,
-                            MessageResponse(
-                                400,
-                                "Email and Password does not Matched"
-                            )
-                        )
+                    errorResponse(
+                        statusCode = 400,
+                        "Email and Password does not Matched"
                     )
                 }
 
             } catch (e: java.lang.Exception) {
-                call.respond(
-                    status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                        null,
-                        null,
-                        MessageResponse(
-                            400,
-                            "Something Went Wrong"
-                        )
-                    )
-                )
+                errorResponse()
             }
         }
         put("/update/{id}") {
@@ -170,30 +131,15 @@ fun Application.userRoute(
                         )
                     )
                 } else {
-                    call.respond(
-                        status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                            null,
-                            null,
-                            MessageResponse(
-                                400,
-                                "User ID Mismatched"
-                            )
-                        )
+                    errorResponse(
+                        statusCode = 400,
+                        "User ID Mismatched"
                     )
                 }
 
 
             } catch (e: java.lang.Exception) {
-                call.respond(
-                    status = HttpStatusCode.BadRequest, ApiResponse<User>(
-                        null,
-                        null,
-                        MessageResponse(
-                            400,
-                            "Something Went Wrong"
-                        )
-                    )
-                )
+                errorResponse()
             }
         }
     }

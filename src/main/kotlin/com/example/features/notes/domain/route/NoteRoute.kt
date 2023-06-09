@@ -4,6 +4,7 @@ import com.example.KoinComponent
 import com.example.features.notes.domain.model.Note
 import com.example.utils.ApiResponse
 import com.example.utils.MessageResponse
+import com.example.utils.errorResponse
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -26,7 +27,7 @@ fun Application.noteRoute(
                         component.noteRepository.addNote(note = note)
                         call.respond(
                             status = HttpStatusCode.Created,
-                            ApiResponse<Note>(
+                            ApiResponse(
                                 null,
                                 listOf(note),
                                 null,
@@ -38,17 +39,7 @@ fun Application.noteRoute(
                         )
 
                     } catch (e: Exception) {
-                        call.respond(
-                            status = HttpStatusCode.Created,
-                            ApiResponse<Note>(
-                                null,
-                                null,
-                                MessageResponse(
-                                    statusCode = 400,
-                                    "Something Went Wrong"
-                                )
-                            )
-                        )
+                        errorResponse()
                     }
                 }
                 get("/{id}") {
@@ -57,7 +48,7 @@ fun Application.noteRoute(
                         val response = component.noteRepository.getNotes(userId ?: "0")
                         call.respond(
                             status = HttpStatusCode.OK,
-                            ApiResponse<Note>(
+                            ApiResponse(
                                 null,
                                 response,
                                 null,
@@ -66,17 +57,7 @@ fun Application.noteRoute(
                         )
 
                     } catch (e: Exception) {
-                        call.respond(
-                            status = HttpStatusCode.Created,
-                            ApiResponse<Note>(
-                                null,
-                                null,
-                                MessageResponse(
-                                    statusCode = 400,
-                                    "Something Went Wrong"
-                                )
-                            )
-                        )
+                        errorResponse()
                     }
 
                 }
@@ -85,42 +66,18 @@ fun Application.noteRoute(
                         val id = call.parameters["id"]
                         val response = component.noteRepository.deleteNote(id ?: "0")
                         if (response > 0)
-                            call.respond(
-                                status = HttpStatusCode.OK,
-                                ApiResponse<Note>(
-                                    null,
-                                    null,
-                                    null,
-                                    MessageResponse(
-                                        statusCode = 200,
-                                        "Note Deleted Successfully"
-                                    )
-                                )
-                            ) else
-                            call.respond(
-                                status = HttpStatusCode.OK,
-                                ApiResponse<Note>(
-                                    null,
-                                    null,
-                                    null,
-                                    MessageResponse(
-                                        statusCode = 400,
-                                        "Note Id Not Found"
-                                    )
-                                )
+                            errorResponse(
+                                statusCode = 200,
+                                "Note Deleted Successfully",
+                                HttpStatusCode.OK
+                            )
+                        else
+                            errorResponse(
+                                statusCode = 400,
+                                "Note Id Not Found"
                             )
                     } catch (e: Exception) {
-                        call.respond(
-                            status = HttpStatusCode.Created,
-                            ApiResponse<Note>(
-                                null,
-                                null,
-                                MessageResponse(
-                                    statusCode = 400,
-                                    "Something Went Wrong"
-                                )
-                            )
-                        )
+                        errorResponse()
                     }
 
                 }
@@ -132,44 +89,20 @@ fun Application.noteRoute(
                             note, id ?: "0"
                         )
                         if (updated > 0)
-                            call.respond(
-                                status = HttpStatusCode.OK,
-                                ApiResponse<Note>(
-                                    null,
-                                    null,
-                                    null,
-                                    MessageResponse(
-                                        statusCode = 200,
-                                        "Note Deleted Successfully"
-                                    )
-                                )
+                            errorResponse(
+                                statusCode = 200,
+                                "Note Updated Successfully",
+                                HttpStatusCode.OK
                             )
                         else
-                            call.respond(
-                                status = HttpStatusCode.OK,
-                                ApiResponse<Note>(
-                                    null,
-                                    null,
-                                    null,
-                                    MessageResponse(
-                                        statusCode = 400,
-                                        "Note Id Not Found"
-                                    )
-                                )
+                            errorResponse(
+                                statusCode = 400,
+                                "Note Id Not Found"
                             )
 
+
                     } catch (e: Exception) {
-                        call.respond(
-                            status = HttpStatusCode.Created,
-                            ApiResponse<Note>(
-                                null,
-                                null,
-                                MessageResponse(
-                                    statusCode = 400,
-                                    "Something Went Wrong"
-                                )
-                            )
-                        )
+                        errorResponse()
                     }
 
                 }
