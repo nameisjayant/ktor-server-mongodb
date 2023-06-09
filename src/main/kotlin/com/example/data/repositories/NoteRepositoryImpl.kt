@@ -25,8 +25,8 @@ class NoteRepositoryImpl : NoteRepository {
         return DatabaseConnection.noteCollection.find(query).toList()
     }
 
-    override suspend fun updateNote(note: Note): Long {
-        val query = Document("_id", note.id)
+    override suspend fun updateNote(note: Note,id:String): Long {
+        val query = Document("_id", id)
         val update = Document(
             "\$set",
             Document("note", note.note)

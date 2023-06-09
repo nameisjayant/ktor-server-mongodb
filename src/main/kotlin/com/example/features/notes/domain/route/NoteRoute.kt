@@ -80,6 +80,101 @@ fun Application.noteRoute(
                     }
 
                 }
+                delete("/{id}") {
+                    try {
+                        val id = call.parameters["id"]
+                        val response = component.noteRepository.deleteNote(id ?: "0")
+                        if (response > 0)
+                            call.respond(
+                                status = HttpStatusCode.OK,
+                                ApiResponse<Note>(
+                                    null,
+                                    null,
+                                    null,
+                                    MessageResponse(
+                                        statusCode = 200,
+                                        "Note Deleted Successfully"
+                                    )
+                                )
+                            ) else
+                            call.respond(
+                                status = HttpStatusCode.OK,
+                                ApiResponse<Note>(
+                                    null,
+                                    null,
+                                    null,
+                                    MessageResponse(
+                                        statusCode = 400,
+                                        "Note Id Not Found"
+                                    )
+                                )
+                            )
+                    } catch (e: Exception) {
+                        call.respond(
+                            status = HttpStatusCode.Created,
+                            ApiResponse<Note>(
+                                null,
+                                null,
+                                MessageResponse(
+                                    statusCode = 400,
+                                    "Something Went Wrong"
+                                )
+                            )
+                        )
+                    }
+
+                }
+                put("/{id}") {
+                    try {
+                        val id = call.parameters["id"]
+                        val note = call.receive<Note>()
+                        val updated = component.noteRepository.updateNote(
+                            note, id ?: "0"
+                        )
+                        if (updated > 0)
+                            call.respond(
+                                status = HttpStatusCode.OK,
+                                ApiResponse<Note>(
+                                    null,
+                                    null,
+                                    null,
+                                    MessageResponse(
+                                        statusCode = 200,
+                                        "Note Deleted Successfully"
+                                    )
+                                )
+                            )
+                        else
+                            call.respond(
+                                status = HttpStatusCode.OK,
+                                ApiResponse<Note>(
+                                    null,
+                                    null,
+                                    null,
+                                    MessageResponse(
+                                        statusCode = 400,
+                                        "Note Id Not Found"
+                                    )
+                                )
+                            )
+
+                    } catch (e: Exception) {
+                        call.respond(
+                            status = HttpStatusCode.Created,
+                            ApiResponse<Note>(
+                                null,
+                                null,
+                                MessageResponse(
+                                    statusCode = 400,
+                                    "Something Went Wrong"
+                                )
+                            )
+                        )
+                    }
+
+
+                }
+
             }
 
         }

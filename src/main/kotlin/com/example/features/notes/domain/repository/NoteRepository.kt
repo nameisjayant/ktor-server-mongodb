@@ -7,6 +7,6 @@ interface NoteRepository {
     suspend fun addNote(note: Note): Note
     suspend fun deleteNote(id: String): Long
     suspend fun getNotes(userId: String): List<Note>
-    suspend fun updateNote(note: Note): Long
+    suspend fun updateNote(note: Note,id:String): Long
 
 }
