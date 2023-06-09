@@ -5,9 +5,11 @@ import com.example.features.notes.domain.model.Note
 import com.example.utils.ApiResponse
 import com.example.utils.MessageResponse
 import com.example.utils.errorResponse
+import com.example.utils.findUserByFromToken
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -22,40 +24,68 @@ fun Application.noteRoute(
         route("/note") {
             authenticate("jwt") {
                 post {
+                    val principal = call.principal<JWTPrincipal>()
+                    if (principal != null) {
+                        try {
+                            val userId = principal.payload.subject
+                            if (userId != null) {
+                                val note = call.receive<Note>()
+                                component.noteRepository.addNote(
+                                    note = Note(
+                                        userId = userId,
+                                        note = note.note,
+                                        description = note.description
+                                    )
+                                )
+                                call.respond(
+                                    status = HttpStatusCode.Created,
+                                    ApiResponse(
+                                        null,
+                                        listOf(note),
+                                        null,
+                                        MessageResponse(
+                                            statusCode = 201,
+                                            "Note Added Successfully"
+                                        )
+                                    )
+                                )
+                            } else {
+                                errorResponse(
+                                    statusCode = 401,
+                                    "Invalid Token"
+                                )
+                            }
+
+
+                        } catch (e: Exception) {
+                            e.message
+                            errorResponse()
+                        }
+
+                    } else {
+                        errorResponse(
+                            statusCode = 401,
+                            "Please Pass Token In The Header"
+                        )
+                    }
+
+                }
+                get {
                     try {
-                        val note = call.receive<Note>()
-                        component.noteRepository.addNote(note = note)
-                        call.respond(
-                            status = HttpStatusCode.Created,
-                            ApiResponse(
-                                null,
-                                listOf(note),
-                                null,
-                                MessageResponse(
-                                    statusCode = 201,
-                                    "Note Added Successfully"
+                        val principal = call.principal<JWTPrincipal>()
+                        val userId = principal?.payload?.subject
+                        if (userId != null) {
+                            val response = component.noteRepository.getNotes(userId)
+                            call.respond(
+                                status = HttpStatusCode.OK,
+                                ApiResponse(
+                                    null,
+                                    response,
+                                    null,
+                                    null
                                 )
                             )
-                        )
-
-                    } catch (e: Exception) {
-                        errorResponse()
-                    }
-                }
-                get("/{id}") {
-                    try {
-                        val userId = call.parameters["id"]
-                        val response = component.noteRepository.getNotes(userId ?: "0")
-                        call.respond(
-                            status = HttpStatusCode.OK,
-                            ApiResponse(
-                                null,
-                                response,
-                                null,
-                                null
-                            )
-                        )
-
+                        }
                     } catch (e: Exception) {
                         errorResponse()
                     }

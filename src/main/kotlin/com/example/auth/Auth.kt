@@ -4,6 +4,10 @@ package com.example.auth
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.example.features.user.domain.model.User
+import com.typesafe.config.ConfigFactory
+import io.jsonwebtoken.security.Keys
+import io.ktor.server.config.*
+import java.security.SecureRandom
 import java.util.*
 
 
@@ -21,8 +25,17 @@ fun generateToken(user: User, jwtConfig: JwtConfig): String {
         .sign(Algorithm.HMAC256(jwtConfig.secret))
 }
 
+fun generateRandomString(length: Int): String {
+    val random = SecureRandom()
+    val bytes = ByteArray(length)
+    random.nextBytes(bytes)
+    return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes)
+}
+
+val secretKey = generateRandomString(32)
+
 val jwtConfig = JwtConfig(
-    secret = "84894844",
+    secret = secretKey,
     issuer = "Server",
     audience = "Note"
 )

@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.example"
-version = "0.0.1"
+version = "0.0.2"
 application {
     mainClass.set("com.example.ApplicationKt")
 
@@ -40,4 +40,8 @@ dependencies {
 
     implementation("io.ktor:ktor-server-auth:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
+
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
 }
