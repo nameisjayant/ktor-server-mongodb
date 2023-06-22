@@ -10,14 +10,14 @@ import java.net.URL
 import java.net.URLEncoder
 
 object DatabaseConnection {
-    //    private val username = URLEncoder.encode(System.getenv(Constant.USERNAME), "UTF-8")
-    //     private val password = URLEncoder.encode(System.getenv(Constant.PASSWORD), "UTF-8")
-    //    private val url = "mongodb://$username:$password@containers-us-west-68.railway.app:8002"
+        private val username = URLEncoder.encode(System.getenv(Constant.USERNAME), "UTF-8")
+         private val password = URLEncoder.encode(System.getenv(Constant.PASSWORD), "UTF-8")
+        private val url = "mongodb://$username:$password@containers-us-west-68.railway.app:8002"
 
-    private val username = URLEncoder.encode("nameisjayant", "UTF-8")
-    private val password = URLEncoder.encode("@@jks123@@", "UTF-8")
+//    private val username = URLEncoder.encode("nameisjayant", "UTF-8")
+//    private val password = URLEncoder.encode("@@jks123@@", "UTF-8")
 
-    private val url = "mongodb+srv://$username:$password@cluster0.f8fcv5s.mongodb.net/"
+//    private val url = "mongodb+srv://$username:$password@cluster0.f8fcv5s.mongodb.net/"
 
     private val client =
         KMongo.createClient(url).coroutine
