@@ -1,6 +1,5 @@
 package com.example
 
-import com.example.auth.JwtConfig
 import com.example.auth.jwtConfig
 import com.example.features.notes.domain.route.noteRoute
 import com.example.features.user.domain.route.userRoute

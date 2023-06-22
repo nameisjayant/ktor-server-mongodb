@@ -25,7 +25,7 @@ fun Application.userRoute(
             try {
                 val userData = call.receive<User>()
                 val hashPassword = hash(userData.password)
-                val response = component.userRepository.addUser(
+                val response = component.userRepository.registerUser(
                     User(email = userData.email, password = hashPassword)
                 )
                 val generateToken = generateToken(

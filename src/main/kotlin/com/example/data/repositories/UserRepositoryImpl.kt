@@ -4,13 +4,10 @@ import com.example.db.DatabaseConnection
 import com.example.features.user.domain.model.User
 import com.example.features.user.domain.repository.UserRepository
 import org.bson.Document
-import org.bson.types.ObjectId
-import org.litote.kmongo.Data
-import org.litote.kmongo.eq
 
 class UserRepositoryImpl : UserRepository {
 
-    override suspend fun addUser(user: User): User {
+    override suspend fun registerUser(user: User): User {
         DatabaseConnection.userCollection.insertOne(user)
         return user
     }
