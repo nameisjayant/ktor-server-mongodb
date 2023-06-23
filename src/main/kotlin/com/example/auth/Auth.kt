@@ -4,9 +4,6 @@ package com.example.auth
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.example.features.user.domain.model.User
-import com.typesafe.config.ConfigFactory
-import io.jsonwebtoken.security.Keys
-import io.ktor.server.config.*
 import java.security.SecureRandom
 import java.util.*
 
