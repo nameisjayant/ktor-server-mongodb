@@ -2,6 +2,7 @@ package com.example.utils
 
 import com.example.auth.secretKey
 import io.jsonwebtoken.Jwts
+import java.util.regex.Pattern
 
 
 fun findUserByFromToken(token: String): String? {
@@ -9,3 +10,5 @@ fun findUserByFromToken(token: String): String? {
     return claims.subject
 
 }
+
+fun validateEmail(email: String) = Pattern.compile(Constant.EMAIL_PATTERN).matcher(email).matches()

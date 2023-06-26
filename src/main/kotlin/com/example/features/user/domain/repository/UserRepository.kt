@@ -13,5 +13,7 @@ interface UserRepository {
     ): Long
     suspend fun loginUser(user: User): User?
 
+    suspend fun getAllEmail():List<String>
+
 
 }

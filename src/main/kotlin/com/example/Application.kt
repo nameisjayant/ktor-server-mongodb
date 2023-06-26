@@ -3,16 +3,13 @@ package com.example
 import com.example.auth.jwtConfig
 import com.example.features.notes.domain.route.noteRoute
 import com.example.features.user.domain.route.userRoute
-import com.example.plugins.configureAuthenticate
-import com.example.plugins.configureSerialization
-import com.example.plugins.configureSession
-import com.example.plugins.startKoin
+import com.example.plugins.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 
 fun main() {
-    embeddedServer(Netty, port = 8002, host = "0.0.0.0", module = Application::module)
+    embeddedServer(Netty, port = 8003, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 }
 

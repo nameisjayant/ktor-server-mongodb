@@ -33,4 +33,8 @@ class UserRepositoryImpl : UserRepository {
         return DatabaseConnection.userCollection.find(query).first()
     }
 
+    override suspend fun getAllEmail(): List<String> {
+        return DatabaseConnection.userCollection.find().toList().map { it.email }
+    }
+
 }
