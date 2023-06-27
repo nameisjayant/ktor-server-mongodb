@@ -14,6 +14,7 @@ interface UserRepository {
     suspend fun loginUser(user: User): User?
 
     suspend fun getAllEmail():List<String>
+    suspend fun getEmailById(id:String):String
 
 
 }

@@ -3,9 +3,12 @@ package com.example.features.user.domain.route
 import com.example.KoinComponent
 import com.example.auth.*
 import com.example.features.user.domain.model.User
-import com.example.plugins.MySession
+import com.example.routings.LoginRoute
+import com.example.routings.RegisterRoute
+import com.example.routings.UserRoute
 import com.example.utils.ApiResponse
 import com.example.utils.Constant.EMAIL_ALREADY_EXITS
+import com.example.utils.Constant.EMAIL_DID_NOT_CHANGED
 import com.example.utils.Constant.EMAIL_IS_NOT_VALID
 import com.example.utils.Constant.EMAIL_PASSWORD_DOES_NOT_MATCHED
 import com.example.utils.Constant.EMAIL_SHOULD_NOT_EMPTY
@@ -19,7 +22,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.sessions.*
 import com.example.utils.Constant.PLEASE_ENTER_EMAIL
 import com.example.utils.Constant.PLEASE_ENTER_PASSWORD
 import com.example.utils.Constant.UPDATE_SUCCESSFULLY
@@ -28,6 +30,9 @@ import com.example.utils.Constant.USER_ID_MISMATCHED
 import com.example.utils.Constant.USER_NOT_FOUND
 import com.example.utils.Constant.USER_REGISTER_SUCCESSFULLY
 import com.example.utils.Constant.ZERO
+import io.ktor.server.resources.*
+import io.ktor.server.routing.post
+import io.ktor.server.routing.put
 
 fun Application.userRoute(
     component: KoinComponent
@@ -36,14 +41,14 @@ fun Application.userRoute(
     routing {
         post("/register") {
 
+            val userData: User = call.receive<User>()
+            val email = userData.email ?: return@post errorResponse(
+                message = PLEASE_ENTER_EMAIL
+            )
+            val password = userData.password ?: return@post errorResponse(
+                message = PLEASE_ENTER_PASSWORD
+            )
             try {
-                val userData: User = call.receive<User>()
-                val email = userData.email ?: return@post errorResponse(
-                    message = PLEASE_ENTER_EMAIL
-                )
-                val password = userData.password ?: return@post errorResponse(
-                    message = PLEASE_ENTER_PASSWORD
-                )
                 if (email.isNotEmpty()) {
                     if (!validateEmail(email))
                         errorResponse(message = EMAIL_IS_NOT_VALID)
@@ -56,7 +61,6 @@ fun Application.userRoute(
                         val response = component.userRepository.registerUser(
                             User(email = email, password = hashPassword)
                         )
-                        call.sessions.set(MySession(response.id))
                         val generateToken = generateToken(
                             userData, jwtConfig
                         )
@@ -80,33 +84,6 @@ fun Application.userRoute(
             }
         }
 
-        delete("/user/{id}") {
-            try {
-                val userId = call.parameters["id"] ?: ZERO
-                val isDeleted = component.userRepository.deleteUser(userId)
-                if (isDeleted > 0)
-                    call.respond(
-                        status = HttpStatusCode.OK,
-                        ApiResponse<User>(
-                            null,
-                            null,
-                            null,
-                            MessageResponse(
-                                200,
-                                USER_DELETED_SUCCESSFULLY
-                            )
-                        )
-                    )
-                else
-                    errorResponse(
-                        400,
-                        USER_NOT_FOUND
-                    )
-            } catch (e: java.lang.Exception) {
-                errorResponse()
-            }
-        }
-
         post("/login") {
             val user = call.receive<User>()
 
@@ -126,7 +103,6 @@ fun Application.userRoute(
                         val response = component.userRepository.loginUser(user)
                         val hashPassword = hash(password)
                         if (response != null && response.password == hashPassword) {
-                            call.sessions.set(MySession(response.id))
                             val generateToken = generateToken(
                                 response, jwtConfig
                             )
@@ -155,7 +131,34 @@ fun Application.userRoute(
                 errorResponse()
             }
         }
-        put("/update/{id}") {
+        delete<UserRoute.Id> {
+            try {
+                val userId = call.parameters["id"] ?: ZERO
+                val isDeleted = component.userRepository.deleteUser(userId)
+                if (isDeleted > 0)
+                    call.respond(
+                        status = HttpStatusCode.OK,
+                        ApiResponse<User>(
+                            null,
+                            null,
+                            null,
+                            MessageResponse(
+                                200,
+                                USER_DELETED_SUCCESSFULLY
+                            )
+                        )
+                    )
+                else
+                    errorResponse(
+                        400,
+                        USER_NOT_FOUND
+                    )
+            } catch (e: java.lang.Exception) {
+                errorResponse()
+            }
+        }
+
+        put<UserRoute.Id> {
             val user = call.receive<User>()
             val id = call.parameters["id"]
             val email = user.email ?: return@put errorResponse(
@@ -176,7 +179,7 @@ fun Application.userRoute(
                     val result = component.userRepository.updateUser(id ?: ZERO, user.email, hashPassword)
                     if (result > 0) {
                         call.respond(
-                            status = HttpStatusCode.OK, ApiResponse<User>(
+                            status = HttpStatusCode.OK, ApiResponse(
                                 null,
                                 listOf(user),
                                 null,
@@ -186,10 +189,13 @@ fun Application.userRoute(
                                 )
                             )
                         )
+                    } else if (component.userRepository.getEmailById(id ?: ZERO) == email) {
+                        errorResponse(
+                            message = EMAIL_DID_NOT_CHANGED
+                        )
                     } else {
                         errorResponse(
-                            statusCode = 400,
-                            USER_ID_MISMATCHED
+                            message = USER_ID_MISMATCHED
                         )
                     }
                 }
@@ -198,6 +204,8 @@ fun Application.userRoute(
                 errorResponse()
             }
         }
+
     }
+
 
 }

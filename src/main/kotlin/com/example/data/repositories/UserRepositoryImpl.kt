@@ -37,4 +37,9 @@ class UserRepositoryImpl : UserRepository {
         return DatabaseConnection.userCollection.find().toList().map { it.email }
     }
 
+    override suspend fun getEmailById(id: String): String {
+        val query = Document("_id", id)
+        return DatabaseConnection.userCollection.find(query).first()?.email ?: ""
+    }
+
 }

@@ -7,6 +7,7 @@ val koin_ktor: String by project
 plugins {
     kotlin("jvm") version "1.8.21"
     id("io.ktor.plugin") version "2.3.1"
+    kotlin("plugin.serialization") version "1.8.21"
 }
 
 group = "com.example"
@@ -41,6 +42,12 @@ dependencies {
     // ktor authentication
     implementation("io.ktor:ktor-server-auth:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
+
+    // ktor resource for type safe routing
+    implementation("io.ktor:ktor-server-resources:$ktor_version")
+
+    // kotlin-serialization
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
 
 

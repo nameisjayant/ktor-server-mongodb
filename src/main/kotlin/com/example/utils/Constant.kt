@@ -23,5 +23,11 @@ object Constant {
     const val EMAIL_PASSWORD_DOES_NOT_MATCHED = "Email and Password does not Matched"
     const val UPDATE_SUCCESSFULLY = "Updated Successfully"
     const val USER_ID_MISMATCHED = "User ID Mismatched"
-
+    const val EMAIL_DID_NOT_CHANGED = "Email and Password did not changed"
+    const val NOTE_ADDED_SUCCESSFULLY = "Note Added Successfully"
+    const val INVALID_TOKEN = "Invalid Token"
+    const val PASS_TOKEN_IN_THE_HEADER =  "Please Pass Token In The Header"
+    const val NOTE_DELETED_SUCCESSFULLY = "Note Deleted Successfully"
+    const val NOTE_ID_NOT_FOUND = "Note Id Not Found"
+    const val NOTE_UPDATE_SUCCESSFULLY = "Note Updated Successfully"
 }

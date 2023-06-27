@@ -3,6 +3,12 @@ package com.example.features.notes.domain.route
 import com.example.KoinComponent
 import com.example.features.notes.domain.model.Note
 import com.example.utils.ApiResponse
+import com.example.utils.Constant.INVALID_TOKEN
+import com.example.utils.Constant.NOTE_ADDED_SUCCESSFULLY
+import com.example.utils.Constant.NOTE_DELETED_SUCCESSFULLY
+import com.example.utils.Constant.NOTE_ID_NOT_FOUND
+import com.example.utils.Constant.NOTE_UPDATE_SUCCESSFULLY
+import com.example.utils.Constant.PASS_TOKEN_IN_THE_HEADER
 import com.example.utils.MessageResponse
 import com.example.utils.errorResponse
 import com.example.utils.findUserByFromToken
@@ -28,7 +34,7 @@ fun Application.noteRoute(
                     if (principal != null) {
                         try {
                             val userId = principal.payload.subject
-                            if (userId != null) {
+                            if (userId.isNotEmpty()) {
                                 val note = call.receive<Note>()
                                 component.noteRepository.addNote(
                                     note = Note(
@@ -45,14 +51,14 @@ fun Application.noteRoute(
                                         null,
                                         MessageResponse(
                                             statusCode = 201,
-                                            "Note Added Successfully"
+                                            NOTE_ADDED_SUCCESSFULLY
                                         )
                                     )
                                 )
                             } else {
                                 errorResponse(
                                     statusCode = 401,
-                                    "Invalid Token"
+                                    INVALID_TOKEN
                                 )
                             }
 
@@ -65,7 +71,7 @@ fun Application.noteRoute(
                     } else {
                         errorResponse(
                             statusCode = 401,
-                            "Please Pass Token In The Header"
+                            PASS_TOKEN_IN_THE_HEADER
                         )
                     }
 
@@ -98,13 +104,13 @@ fun Application.noteRoute(
                         if (response > 0)
                             errorResponse(
                                 statusCode = 200,
-                                "Note Deleted Successfully",
+                                NOTE_DELETED_SUCCESSFULLY,
                                 HttpStatusCode.OK
                             )
                         else
                             errorResponse(
                                 statusCode = 400,
-                                "Note Id Not Found"
+                                NOTE_ID_NOT_FOUND
                             )
                     } catch (e: Exception) {
                         errorResponse()
@@ -121,13 +127,13 @@ fun Application.noteRoute(
                         if (updated > 0)
                             errorResponse(
                                 statusCode = 200,
-                                "Note Updated Successfully",
+                                NOTE_UPDATE_SUCCESSFULLY,
                                 HttpStatusCode.OK
                             )
                         else
                             errorResponse(
                                 statusCode = 400,
-                                "Note Id Not Found"
+                                NOTE_ID_NOT_FOUND
                             )
 
 
