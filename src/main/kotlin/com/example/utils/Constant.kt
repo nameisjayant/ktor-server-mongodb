@@ -30,4 +30,6 @@ object Constant {
     const val NOTE_DELETED_SUCCESSFULLY = "Note Deleted Successfully"
     const val NOTE_ID_NOT_FOUND = "Note Id Not Found"
     const val NOTE_UPDATE_SUCCESSFULLY = "Note Updated Successfully"
+    const val ISSUER  = "Server"
+    const val AUDIENCE = "Note"
 }

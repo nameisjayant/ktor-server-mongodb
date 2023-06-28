@@ -9,6 +9,7 @@ import com.example.utils.Constant.NOTE_DELETED_SUCCESSFULLY
 import com.example.utils.Constant.NOTE_ID_NOT_FOUND
 import com.example.utils.Constant.NOTE_UPDATE_SUCCESSFULLY
 import com.example.utils.Constant.PASS_TOKEN_IN_THE_HEADER
+import com.example.utils.Constant.ZERO
 import com.example.utils.MessageResponse
 import com.example.utils.errorResponse
 import com.example.utils.findUserByFromToken
@@ -95,12 +96,11 @@ fun Application.noteRoute(
                     } catch (e: Exception) {
                         errorResponse()
                     }
-
                 }
                 delete("/{id}") {
                     try {
                         val id = call.parameters["id"]
-                        val response = component.noteRepository.deleteNote(id ?: "0")
+                        val response = component.noteRepository.deleteNote(id ?: ZERO)
                         if (response > 0)
                             errorResponse(
                                 statusCode = 200,
@@ -109,8 +109,7 @@ fun Application.noteRoute(
                             )
                         else
                             errorResponse(
-                                statusCode = 400,
-                                NOTE_ID_NOT_FOUND
+                                message = NOTE_ID_NOT_FOUND
                             )
                     } catch (e: Exception) {
                         errorResponse()
@@ -122,7 +121,7 @@ fun Application.noteRoute(
                         val id = call.parameters["id"]
                         val note = call.receive<Note>()
                         val updated = component.noteRepository.updateNote(
-                            note, id ?: "0"
+                            note, id ?: ZERO
                         )
                         if (updated > 0)
                             errorResponse(
@@ -132,8 +131,7 @@ fun Application.noteRoute(
                             )
                         else
                             errorResponse(
-                                statusCode = 400,
-                                NOTE_ID_NOT_FOUND
+                                message = NOTE_ID_NOT_FOUND
                             )
 
 

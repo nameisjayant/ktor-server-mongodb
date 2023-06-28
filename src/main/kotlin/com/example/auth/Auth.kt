@@ -4,6 +4,7 @@ package com.example.auth
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.example.features.user.domain.model.User
+import com.example.utils.Constant
 import java.security.SecureRandom
 import java.util.*
 
@@ -33,6 +34,6 @@ val secretKey = generateRandomString(32)
 
 val jwtConfig = JwtConfig(
     secret = secretKey,
-    issuer = "Server",
-    audience = "Note"
+    issuer = Constant.ISSUER,
+    audience = Constant.AUDIENCE
 )
