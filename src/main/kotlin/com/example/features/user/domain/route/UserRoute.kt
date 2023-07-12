@@ -39,6 +39,11 @@ fun Application.userRoute(
 ) {
 
     routing {
+
+        get("/") {
+            call.respondText("Testing End Points")
+        }
+
         post("/register") {
 
             val userData: User = call.receive<User>()

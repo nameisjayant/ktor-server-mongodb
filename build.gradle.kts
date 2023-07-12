@@ -34,6 +34,10 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     implementation("org.litote.kmongo:kmongo-coroutine:$kmongo_version")
 
+    //tests
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
+
     // Koin for Ktor
     implementation("io.insert-koin:koin-ktor:$koin_ktor")
     // SLF4J Logger
@@ -55,4 +59,5 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
     implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
